@@ -1,0 +1,35 @@
+@import "leaflet/dist/leaflet.css";
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+    Cantarell, sans-serif;
+  background-color: #121614;
+  color: #e5e9f0;
+  overflow-x: hidden;
+}
+
+/* Custom Leaflet Map Pin Styles */
+.custom-pin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Override Leaflet Popup Styles for Dark Mode */
+.leaflet-popup-content-wrapper {
+  background: #1e2421 !important;
+  color: #e5e9f0 !important;
+  border: 1px solid #2d3530;
+  border-radius: 8px !important;
+}
+
+.leaflet-popup-tip {
+  background: #1e2421 !important;
+}

@@ -1,0 +1,170 @@
+[
+  {
+    "id": "borpani",
+    "name": "Borpani Tea Estate",
+    "location": "Dibrugarh, Assam",
+    "region": "Assam",
+    "lat": 27.4728,
+    "lng": 94.912,
+    "image": "/borpani_tea_estate.jpeg",
+    "monthlyYield": [
+      2918, 4517, 18824, 34824, 45450, 53193, 51275, 50763, 46631, 33646, 17756,
+      6015
+    ],
+    "firstFlush": 53648,
+    "secondFlush": 149918,
+    "monsoonAutumnYield": 148796,
+    "totalYield": 365812
+  },
+  {
+    "id": "halmira",
+    "name": "Halmira Valley Estate",
+    "location": "Tinsukia, Assam",
+    "region": "Assam",
+    "lat": 27.49,
+    "lng": 95.36,
+    "image": "/halmira_valley_estate.jpeg",
+    "monthlyYield": [
+      1715, 3044, 13435, 24682, 29713, 35770, 35935, 30516, 30597, 20597, 10356,
+      3906
+    ],
+    "firstFlush": 38117,
+    "secondFlush": 101418,
+    "monsoonAutumnYield": 92066,
+    "totalYield": 240266
+  },
+  {
+    "id": "rangajan",
+    "name": "Rangajan Tea Estate",
+    "location": "Jorhat, Assam",
+    "region": "Assam",
+    "lat": 26.7509,
+    "lng": 94.2037,
+    "image": "/rangajan_tea_estate.jpeg",
+    "monthlyYield": [
+      2211, 4010, 17370, 31848, 37725, 50293, 44563, 40830, 37542, 27722, 13519,
+      4865
+    ],
+    "firstFlush": 49218,
+    "secondFlush": 132581,
+    "monsoonAutumnYield": 119613,
+    "totalYield": 312498
+  },
+  {
+    "id": "deomornoi",
+    "name": "Deomornoi Estate",
+    "location": "Sonitpur, Assam",
+    "region": "Assam",
+    "lat": 26.6528,
+    "lng": 92.83,
+    "image": "/deomornoi_estate.jpeg",
+    "monthlyYield": [
+      1425, 2255, 10472, 18989, 24834, 29500, 26281, 26623, 21883, 15791, 8479,
+      2914
+    ],
+    "firstFlush": 29461,
+    "secondFlush": 80615,
+    "monsoonAutumnYield": 72776,
+    "totalYield": 189446
+  },
+  {
+    "id": "khowang",
+    "name": "Khowang Bagicha",
+    "location": "Golaghat, Assam",
+    "region": "Assam",
+    "lat": 26.51,
+    "lng": 93.96,
+    "image": "/khowang_bagicha.jpeg",
+    "monthlyYield": [
+      1926, 3292, 13701, 27306, 31557, 40695, 34829, 37814, 29546, 20807, 12586,
+      3723
+    ],
+    "firstFlush": 41007,
+    "secondFlush": 107081,
+    "monsoonAutumnYield": 100753,
+    "totalYield": 257782
+  },
+  {
+    "id": "manjushree",
+    "name": "Manjushree Tea Garden",
+    "location": "Darjeeling, West Bengal",
+    "region": "West Bengal",
+    "lat": 27.041,
+    "lng": 88.2663,
+    "image": "/manjushree_tea_garden.jpeg",
+    "monthlyYield": [
+      750, 1155, 4893, 9580, 11781, 14001, 13638, 12903, 11418, 8489, 4179, 1553
+    ],
+    "firstFlush": 14473,
+    "secondFlush": 39420,
+    "monsoonAutumnYield": 36989,
+    "totalYield": 94340
+  },
+  {
+    "id": "silverleaf",
+    "name": "Silverleaf Estate",
+    "location": "Darjeeling, West Bengal",
+    "region": "West Bengal",
+    "lat": 27.05,
+    "lng": 88.25,
+    "image": "/silverleaf_estate.jpeg",
+    "monthlyYield": [
+      850, 1241, 6121, 10717, 14110, 15643, 16119, 15987, 13599, 9306, 5301,
+      1582
+    ],
+    "firstFlush": 16838,
+    "secondFlush": 45872,
+    "monsoonAutumnYield": 44193,
+    "totalYield": 110576
+  },
+  {
+    "id": "chotamota",
+    "name": "Chotamota Tea Garden",
+    "location": "Jalpaiguri (Dooars), West Bengal",
+    "region": "West Bengal",
+    "lat": 26.54,
+    "lng": 88.72,
+    "image": "/chotamota_tea_garden.jpeg",
+    "monthlyYield": [
+      1791, 2688, 12129, 20434, 28796, 34830, 33679, 30302, 25172, 17083, 10271,
+      3209
+    ],
+    "firstFlush": 32563,
+    "secondFlush": 97305,
+    "monsoonAutumnYield": 82828,
+    "totalYield": 220384
+  },
+  {
+    "id": "nagrakata",
+    "name": "Nagrakata Hills Estate",
+    "location": "Nagrakata (Dooars), West Bengal",
+    "region": "West Bengal",
+    "lat": 26.89,
+    "lng": 88.83,
+    "image": "/nagrakata_hills_estate.jpeg",
+    "monthlyYield": [
+      1996, 3087, 14035, 27607, 35326, 43074, 40895, 37362, 31309, 24301, 13003,
+      4003
+    ],
+    "firstFlush": 41642,
+    "secondFlush": 119295,
+    "monsoonAutumnYield": 105978,
+    "totalYield": 275998
+  },
+  {
+    "id": "mistmount",
+    "name": "Mistmount Estate",
+    "location": "Kalimpong, West Bengal",
+    "region": "West Bengal",
+    "lat": 27.06,
+    "lng": 88.47,
+    "image": "/mistmount_estate.jpeg",
+    "monthlyYield": [
+      632, 992, 3936, 7929, 9642, 11881, 12215, 11590, 10196, 6444, 3626, 1224
+    ],
+    "firstFlush": 11865,
+    "secondFlush": 33738,
+    "monsoonAutumnYield": 31856,
+    "totalYield": 80307
+  }
+]
