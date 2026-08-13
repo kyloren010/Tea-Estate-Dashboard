@@ -1,20 +1,28 @@
 import { useState } from "react";
 
 export default function EstateList({
-  filteredEstates,
+  filteredEstates = [],
   selectedEstate,
-  comparedEstate,
+  comparedEstates = [],
+  comparedEstate = null, // Fallback for single-object handling
   onSelectEstate,
   onSelectCompare,
 }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("yield-desc");
 
+  // Normalize compared list into a standard array
+  const activeComparedList = Array.isArray(comparedEstates)
+    ? comparedEstates
+    : comparedEstate
+      ? [comparedEstate]
+      : [];
+
   // Filter by search keyword
   const searchFiltered = filteredEstates.filter(
     (e) =>
       e.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      e.location.toLowerCase().includes(searchTerm.toLowerCase()),
+      e.location?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   // Sort logic
@@ -88,7 +96,11 @@ export default function EstateList({
       >
         {sortedEstates.map((item) => {
           const isSelected = selectedEstate?.id === item.id;
-          const isCompared = comparedEstate?.id === item.id;
+
+          // Check if item exists in compared array
+          const isCompared = activeComparedList.some(
+            (comp) => comp?.id === item.id,
+          );
 
           return (
             <div
@@ -137,7 +149,7 @@ export default function EstateList({
               {/* COMPARE BUTTON */}
               {!isSelected && (
                 <button
-                  onClick={() => onSelectCompare(isCompared ? null : item)}
+                  onClick={() => onSelectCompare(item)}
                   style={{
                     padding: "4px 8px",
                     fontSize: "11px",
@@ -149,7 +161,7 @@ export default function EstateList({
                     fontWeight: "600",
                   }}
                 >
-                  {isCompared ? "Comparing" : "+ Compare"}
+                  {isCompared ? "Comparing ✓" : "+ Compare"}
                 </button>
               )}
             </div>

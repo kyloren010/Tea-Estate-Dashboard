@@ -1,7 +1,19 @@
 import { Line } from "react-chartjs-2";
 import { getChartData, chartOptions } from "../utils/chartConfig";
 
-export default function YieldChart({ selectedEstate, comparedEstate }) {
+export default function YieldChart({
+  selectedEstate,
+  comparedEstates = [],
+  comparedEstate,
+}) {
+  // Normalize array input so all active comparison items are rendered
+  const activeComparedList =
+    Array.isArray(comparedEstates) && comparedEstates.length > 0
+      ? comparedEstates
+      : comparedEstate
+        ? [comparedEstate]
+        : [];
+
   return (
     <div
       style={{
@@ -23,7 +35,7 @@ export default function YieldChart({ selectedEstate, comparedEstate }) {
       </h4>
       <div style={{ height: "200px" }}>
         <Line
-          data={getChartData(selectedEstate, comparedEstate)}
+          data={getChartData(selectedEstate, activeComparedList)}
           options={chartOptions}
         />
       </div>

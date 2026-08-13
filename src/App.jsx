@@ -3,11 +3,15 @@ import estatesData from "./data/teaEstates.json";
 import Header from "./components/Header";
 import MapView from "./components/MapView";
 import EstateDetails from "./components/EstateDetails";
+import YieldBarChart from "./components/YieldBarChart";
+import YieldChart from "./components/YieldChart";
+import { exportToPdf } from "./utils/pdfExporter";
 
 export default function App() {
   const [selectedEstate, setSelectedEstate] = useState(estatesData[0]);
-  const [comparedEstate, setComparedEstate] = useState(null);
+  const [comparedEstates, setComparedEstates] = useState([]);
   const [filterRegion, setFilterRegion] = useState("All");
+  const [chartType, setChartType] = useState("line"); // 'line' or 'bar'
 
   const filteredEstates = estatesData.filter(
     (e) => filterRegion === "All" || e.region === filterRegion,
@@ -28,6 +32,28 @@ export default function App() {
     }
   };
 
+  const handleToggleCompare = (estateToCompare) => {
+    if (!estateToCompare) {
+      setComparedEstates([]);
+      return;
+    }
+    setComparedEstates((prev) => {
+      const exists = prev.some((e) => e.id === estateToCompare.id);
+      if (exists) {
+        return prev.filter((e) => e.id !== estateToCompare.id);
+      }
+      return [...prev, estateToCompare];
+    });
+  };
+
+  const handleExportPdf = () => {
+    if (!selectedEstate) {
+      alert("Please select a tea estate first.");
+      return;
+    }
+    exportToPdf(selectedEstate, comparedEstates);
+  };
+
   return (
     <div
       style={{
@@ -38,10 +64,16 @@ export default function App() {
         flexDirection: "column",
       }}
     >
+      {/* HEADER: Single unified control bar */}
       <Header
         totalProduction={totalProduction}
         filterRegion={filterRegion}
         onRegionChange={handleRegionChange}
+        selectedEstate={selectedEstate}
+        comparedEstates={comparedEstates}
+        chartType={chartType}
+        setChartType={setChartType}
+        onExportPdf={handleExportPdf}
       />
 
       <div
@@ -56,18 +88,35 @@ export default function App() {
         <MapView
           filteredEstates={filteredEstates}
           selectedEstate={selectedEstate}
-          comparedEstate={comparedEstate}
+          comparedEstates={comparedEstates}
           filterRegion={filterRegion}
           onSelectEstate={setSelectedEstate}
         />
 
-        <EstateDetails
-          selectedEstate={selectedEstate}
-          comparedEstate={comparedEstate}
-          filteredEstates={filteredEstates}
-          onSelectEstate={setSelectedEstate}
-          onSelectCompare={setComparedEstate}
-        />
+        {/* Capturable Export Container */}
+        <div
+          id="dashboard-export-area"
+          style={{
+            padding: "16px",
+            overflowY: "auto",
+            display: "flex",
+            flexDirection: "column",
+            gap: "16px",
+            backgroundColor: "#0d110e",
+          }}
+        >
+          <EstateDetails
+            selectedEstate={selectedEstate}
+            comparedEstates={comparedEstates}
+            filteredEstates={filteredEstates}
+            onSelectEstate={setSelectedEstate}
+            onSelectCompare={handleToggleCompare}
+            chartType={chartType}
+            YieldChartComponent={
+              chartType === "bar" ? YieldBarChart : YieldChart
+            }
+          />
+        </div>
       </div>
     </div>
   );

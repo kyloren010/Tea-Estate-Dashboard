@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import MapFlyTo from "./MapFlyTo";
-import { getCustomIcon } from "../utils/mapUtils";
+import { getCustomIcon, ESTATE_COLORS } from "../utils/mapUtils";
 
 const MAP_LAYERS = {
   dark: {
@@ -18,9 +18,9 @@ const MAP_LAYERS = {
 };
 
 export default function MapView({
-  filteredEstates,
+  filteredEstates = [],
   selectedEstate,
-  comparedEstate,
+  comparedEstates = [],
   filterRegion,
   onSelectEstate,
 }) {
@@ -55,7 +55,7 @@ export default function MapView({
               fontSize: "12px",
               fontWeight: "600",
               cursor: "pointer",
-              backgroundColor: mapStyle === key ? "#f3c85f" : "transparent",
+              backgroundColor: mapStyle === key ? "#f5c219" : "transparent",
               color: mapStyle === key ? "#121614" : "#88929a",
               transition: "all 0.2s ease",
             }}
@@ -84,25 +84,58 @@ export default function MapView({
         />
 
         {filteredEstates.map((estate) => {
+          // Normalize lat/lng in case coordinates are nested in JSON
+          const lat = estate.coordinates?.lat ?? estate.lat;
+          const lng = estate.coordinates?.lng ?? estate.lng;
+
+          if (!lat || !lng) return null;
+
           const isPrimary = selectedEstate?.id === estate.id;
-          const isCompared = comparedEstate?.id === estate.id;
+
+          // Normalize compare list array
+          const compareList = Array.isArray(comparedEstates)
+            ? comparedEstates
+            : comparedEstates
+              ? [comparedEstates]
+              : [];
+
+          // Find exact index position in comparisons array
+          const compareIndex = compareList.findIndex(
+            (c) => c?.id === estate.id,
+          );
+          const isCompared = compareIndex !== -1;
+
+          // Match Pin Color with Chart Dataset Palette:
+          // Index 0: Primary Selected (#f3c85f - Gold)
+          // Index 1+: Comparison Estates (Sky Blue, Light Green, Coral Red, Soft Purple)
+          let pinColor = null;
+          if (isPrimary) {
+            pinColor = ESTATE_COLORS[0];
+          } else if (isCompared) {
+            pinColor = ESTATE_COLORS[(compareIndex + 1) % ESTATE_COLORS.length];
+          }
 
           return (
             <Marker
               key={estate.id}
-              position={[estate.lat, estate.lng]}
+              position={[lat, lng]}
               icon={getCustomIcon(
-                isCompared ? "Compare" : estate.region,
+                estate.region,
                 isPrimary || isCompared,
+                pinColor,
               )}
               eventHandlers={{
                 click: () => onSelectEstate(estate),
               }}
             >
               <Popup>
-                <strong style={{ color: "#f3c85f" }}>{estate.name}</strong>
+                <strong style={{ color: pinColor || "#f3705f" }}>
+                  {estate.name}
+                </strong>
                 <br />
-                <span style={{ fontSize: "12px" }}>{estate.location}</span>
+                <span style={{ fontSize: "12px" }}>
+                  {estate.location || `${estate.region}, India`}
+                </span>
               </Popup>
             </Marker>
           );

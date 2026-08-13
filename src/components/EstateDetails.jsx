@@ -1,17 +1,29 @@
 import { motion, AnimatePresence } from "framer-motion";
 import StatCard from "./StatCard";
-import YieldChart from "./YieldChart";
 import EstateList from "./EstateList";
 import { calculateFlushYields } from "../utils/chartConfig";
 
 export default function EstateDetails({
   selectedEstate,
-  comparedEstate,
-  filteredEstates,
+  comparedEstates = [],
+  comparedEstate = null,
+  filteredEstates = [],
   onSelectEstate,
   onSelectCompare,
+  chartType = "line",
+  YieldChartComponent,
 }) {
-  const primaryFlush = calculateFlushYields(selectedEstate.monthlyYield);
+  if (!selectedEstate) return null;
+
+  // Calculate flush yields safely
+  const primaryFlush = calculateFlushYields(selectedEstate.monthlyYield || []);
+
+  // Normalize compared estates to an array
+  const activeComparedList = Array.isArray(comparedEstates)
+    ? comparedEstates
+    : comparedEstate
+      ? [comparedEstate]
+      : [];
 
   return (
     <div
@@ -68,67 +80,28 @@ export default function EstateDetails({
             </span>
           </div>
 
-          {/* ========================================================= */}
-          {/* 🔴 ORIGINAL CODE (COMMENTED OUT FOR LATER USE)          */}
-          {/* ========================================================= */}
-          {
-            <h2
-              style={{
-                margin: "0 0 4px 0",
-                fontFamily: "Georgia, serif",
-                fontSize: "22px",
-                color: "#e5e9f0",
-              }}
-            >
-              {selectedEstate.name}
-            </h2>
-          }
-
-          {/* ==================== 🟡 START OF UNFINISHED BUTTON ==================== */}
-          {/* <div
+          {/* ESTATE NAME & LOCATION */}
+          <h2
             style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-start",
-              marginBottom: "4px",
+              margin: "0 0 4px 0",
+              fontFamily: "Georgia, serif",
+              fontSize: "22px",
+              color: "#e5e9f0",
             }}
           >
-            <h2
-              style={{
-                margin: 0,
-                fontFamily: "Georgia, serif",
-                fontSize: "22px",
-                color: "#e5e9f0",
-              }}
-            >
-              {selectedEstate.name}
-            </h2>
-
-            <button
-              disabled
-              style={{
-                opacity: 0.5,
-                cursor: "not-allowed",
-                backgroundColor: "#232a26",
-                color: "#88929a",
-                border: "1px solid #2d3530",
-                padding: "6px 12px",
-                borderRadius: "6px",
-                fontSize: "11px",
-                whiteSpace: "nowrap",
-              }}
-              title="Phase 2 Feature"
-            >
-              📥 Export CSV (Phase 2)
-            </button>
-          </div> */}
-          {/* ===================== 🟡 END OF UNFINISHED BUTTON ===================== */}
+            {selectedEstate.name}
+          </h2>
 
           <p
-            style={{ margin: "0 0 16px 0", color: "#88929a", fontSize: "12px" }}
+            style={{
+              margin: "0 0 16px 0",
+              color: "#88929a",
+              fontSize: "12px",
+            }}
           >
-            📍 {selectedEstate.location} • ({selectedEstate.lat}°N,{" "}
-            {selectedEstate.lng}°E)
+            📍 {selectedEstate.location || `${selectedEstate.region}, India`} •
+            ({selectedEstate.coordinates?.lat ?? selectedEstate.lat}°N,{" "}
+            {selectedEstate.coordinates?.lng ?? selectedEstate.lng}°E)
           </p>
 
           {/* FLUSH BREAKDOWN SECTION */}
@@ -163,51 +136,115 @@ export default function EstateDetails({
             </div>
           </div>
 
-          {/* COMPARISON STATUS BANNER */}
-          {comparedEstate && (
+          {/* ACTIVE COMPARISON BANNERS */}
+          {activeComparedList.length > 0 && (
             <div
               style={{
-                backgroundColor: "rgba(56, 189, 248, 0.1)",
-                border: "1px solid #38bdf8",
-                borderRadius: "6px",
-                padding: "8px 12px",
-                fontSize: "12px",
-                color: "#38bdf8",
                 display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
+                flexDirection: "column",
+                gap: "6px",
                 marginBottom: "16px",
               }}
             >
-              <span>
-                Comparing with: <strong>{comparedEstate.name}</strong>
-              </span>
-              <button
-                onClick={() => onSelectCompare(null)}
+              <div
                 style={{
-                  background: "none",
-                  border: "none",
-                  color: "#38bdf8",
-                  cursor: "pointer",
-                  fontWeight: "bold",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
                 }}
               >
-                ✕ Clear
-              </button>
+                <span style={{ fontSize: "11px", color: "#88929a" }}>
+                  Active Comparisons ({activeComparedList.length}):
+                </span>
+                <button
+                  onClick={() => onSelectCompare(null)}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    color: "#fb7185",
+                    cursor: "pointer",
+                    fontSize: "11px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  Clear All
+                </button>
+              </div>
+
+              {activeComparedList.map((comp) => (
+                <div
+                  key={comp.id}
+                  style={{
+                    backgroundColor: "rgba(56, 189, 248, 0.1)",
+                    border: "1px solid #38bdf8",
+                    borderRadius: "6px",
+                    padding: "6px 12px",
+                    fontSize: "12px",
+                    color: "#38bdf8",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <span>
+                    Comparing with: <strong>{comp.name}</strong>
+                  </span>
+                  <button
+                    onClick={() => onSelectCompare(comp)}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      color: "#38bdf8",
+                      cursor: "pointer",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
             </div>
           )}
 
-          {/* DUAL OR SINGLE YIELD CHART */}
-          <YieldChart
-            selectedEstate={selectedEstate}
-            comparedEstate={comparedEstate}
-          />
+          {/* DYNAMIC YIELD CHART CONTAINER */}
+          <div style={{ marginBottom: "20px" }}>
+            <h4
+              style={{
+                fontSize: "11px",
+                color: "#88929a",
+                textTransform: "uppercase",
+                margin: "0 0 8px 0",
+              }}
+            >
+              {chartType === "bar"
+                ? "2025 Harvest Yield Profile (Bar View)"
+                : "2025 Harvest Yield Profile (Line View)"}
+            </h4>
+
+            <div
+              id="yield-chart-wrapper"
+              style={{
+                backgroundColor: "#121614",
+                borderRadius: "8px",
+                padding: "12px",
+              }}
+            >
+              {YieldChartComponent ? (
+                <YieldChartComponent
+                  selectedEstate={selectedEstate}
+                  comparedEstates={activeComparedList}
+                  comparedEstate={activeComparedList[0] || null}
+                />
+              ) : null}
+            </div>
+          </div>
 
           {/* QUICK SELECTOR & COMPARISON SELECTOR */}
           <EstateList
             filteredEstates={filteredEstates}
             selectedEstate={selectedEstate}
-            comparedEstate={comparedEstate}
+            comparedEstates={activeComparedList}
+            comparedEstate={activeComparedList[0] || null}
             onSelectEstate={onSelectEstate}
             onSelectCompare={onSelectCompare}
           />

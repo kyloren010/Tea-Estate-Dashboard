@@ -4,6 +4,7 @@ import {
   LinearScale,
   PointElement,
   LineElement,
+  BarElement,
   Title,
   Tooltip,
   Legend,
@@ -15,6 +16,7 @@ ChartJS.register(
   LinearScale,
   PointElement,
   LineElement,
+  BarElement,
   Title,
   Tooltip,
   Legend,
@@ -36,7 +38,15 @@ export const MONTHS = [
   "Dec",
 ];
 
-// Helper to sum yields by Flush periods
+// Color palette for multiple compared estates
+const ESTATE_COLORS = [
+  "#f3c85f", // Gold (Primary)
+  "#38bdf8", // Sky Blue
+  "#4ade80", // Light Green
+  "#fb7185", // Coral Red
+  "#c084fc", // Soft Purple
+];
+
 export const calculateFlushYields = (monthlyArray = []) => {
   const firstFlush = (monthlyArray[2] || 0) + (monthlyArray[3] || 0);
   const secondFlush =
@@ -46,65 +56,80 @@ export const calculateFlushYields = (monthlyArray = []) => {
   return { firstFlush, secondFlush, remainder };
 };
 
-export const getChartData = (estateA, estateB = null) => {
-  const datasets = [
-    {
-      label: `${estateA.name} (kg)`,
-      data: estateA.monthlyYield,
-      borderColor: "#f3c85f",
-      backgroundColor: estateB ? "transparent" : "rgba(243, 200, 95, 0.12)",
-      fill: !estateB,
-      tension: 0.35,
-      pointBackgroundColor: "#f3c85f",
-      pointRadius: 4,
-    },
-  ];
+export const getChartData = (selectedEstate, comparedEstates = []) => {
+  const compareList = Array.isArray(comparedEstates)
+    ? comparedEstates
+    : comparedEstates
+      ? [comparedEstates]
+      : [];
 
-  if (estateB) {
-    datasets.push({
-      label: `${estateB.name} (kg)`,
-      data: estateB.monthlyYield,
-      borderColor: "#38bdf8",
-      backgroundColor: "transparent",
-      fill: false,
+  const allEstates = [selectedEstate, ...compareList].filter(Boolean);
+
+  const datasets = allEstates.map((estate, idx) => {
+    const color = ESTATE_COLORS[idx % ESTATE_COLORS.length];
+    const isSingle = allEstates.length === 1;
+
+    return {
+      label: `${estate.name} (kg)`,
+      data: estate.monthlyYield,
+      borderColor: color,
+      backgroundColor: isSingle ? "rgba(243, 200, 95, 0.25)" : color,
+      fill: isSingle,
       tension: 0.35,
-      pointBackgroundColor: "#38bdf8",
+      pointBackgroundColor: color,
       pointRadius: 4,
-    });
-  }
+      borderRadius: 4,
+    };
+  });
 
   return { labels: MONTHS, datasets };
 };
 
-export const chartOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    legend: {
-      display: true,
-      labels: { color: "#e5e9f0", font: { size: 11 } },
-    },
-    tooltip: {
-      backgroundColor: "#1e2421",
-      titleColor: "#f3c85f",
-      bodyColor: "#e5e9f0",
-      borderColor: "#2d3530",
-      borderWidth: 1,
-      padding: 10,
-      callbacks: {
-        label: (context) =>
-          `${context.dataset.label}: ${context.parsed.y.toLocaleString()} kg`,
+/**
+ * Returns chart options configured with high contrast dark text for white canvas export
+ */
+export const getChartOptions = (isExporting = false) => {
+  const textColor = isExporting ? "#1e293b" : "#88929a";
+  const legendColor = isExporting ? "#0f172a" : "#e5e9f0";
+  const gridColor = isExporting
+    ? "rgba(0, 0, 0, 0.12)"
+    : "rgba(255, 255, 255, 0.05)";
+
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        labels: {
+          color: legendColor,
+          font: { size: 11, weight: "600" },
+        },
+      },
+      tooltip: {
+        backgroundColor: "#1e2421",
+        titleColor: "#f3c85f",
+        bodyColor: "#e5e9f0",
+        borderColor: "#2d3530",
+        borderWidth: 1,
+        padding: 10,
+        callbacks: {
+          label: (context) =>
+            `${context.dataset.label}: ${context.parsed.y.toLocaleString()} kg`,
+        },
       },
     },
-  },
-  scales: {
-    x: {
-      grid: { color: "rgba(255,255,255,0.05)" },
-      ticks: { color: "#88929a", font: { size: 10 } },
+    scales: {
+      x: {
+        grid: { color: gridColor },
+        ticks: { color: textColor, font: { size: 10, weight: "600" } },
+      },
+      y: {
+        grid: { color: gridColor },
+        ticks: { color: textColor, font: { size: 11, weight: "600" } },
+      },
     },
-    y: {
-      grid: { color: "rgba(255,255,255,0.05)" },
-      ticks: { color: "#88929a", font: { size: 11 } },
-    },
-  },
+  };
 };
+
+export const chartOptions = getChartOptions(false);
