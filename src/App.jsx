@@ -5,16 +5,19 @@ import MapView from "./components/MapView";
 import EstateDetails from "./components/EstateDetails";
 import YieldBarChart from "./components/YieldBarChart";
 import YieldChart from "./components/YieldChart";
-import JalpaiguriMap from "./components/JalpaiguriMap";
+import SolutionsView from "./components/SolutionsView";
 import { exportToPdf } from "./utils/pdfExporter";
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState("overview"); // 'overview' or 'solutions'
-  const [showBoundary, setShowBoundary] = useState(true);
+  const [activeTab, setActiveTab] = useState("overview");
   const [selectedEstate, setSelectedEstate] = useState(estatesData[0]);
   const [comparedEstates, setComparedEstates] = useState([]);
   const [filterRegion, setFilterRegion] = useState("All");
-  const [chartType, setChartType] = useState("line"); // 'line' or 'bar'
+  const [chartType, setChartType] = useState("line");
+
+  // Solutions Inspect state managed at App level
+  const [isInspectActive, setIsInspectActive] = useState(false);
+  const [selectedTiffUrl, setSelectedTiffUrl] = useState(null);
 
   const filteredEstates = estatesData.filter(
     (e) => filterRegion === "All" || e.region === filterRegion,
@@ -57,6 +60,14 @@ export default function App() {
     exportToPdf(selectedEstate, comparedEstates);
   };
 
+  // Reset selected GeoTIFF layer when disabling Inspect mode
+  const handleInspectToggle = (active) => {
+    setIsInspectActive(active);
+    if (!active) {
+      setSelectedTiffUrl(null);
+    }
+  };
+
   return (
     <div
       style={{
@@ -67,12 +78,11 @@ export default function App() {
         flexDirection: "column",
       }}
     >
-      {/* HEADER: Single unified control bar with tab navigation */}
       <Header
         activeTab={activeTab}
         setActiveTab={setActiveTab}
-        showBoundary={showBoundary}
-        setShowBoundary={setShowBoundary}
+        isInspectActive={isInspectActive}
+        setIsInspectActive={handleInspectToggle}
         totalProduction={totalProduction}
         filterRegion={filterRegion}
         onRegionChange={handleRegionChange}
@@ -83,8 +93,7 @@ export default function App() {
         onExportPdf={handleExportPdf}
       />
 
-      {/* TAB CONTENT RENDER */}
-      {activeTab === "overview" ? (
+      {activeTab === "overview" && (
         <div
           style={{
             display: "grid",
@@ -102,7 +111,6 @@ export default function App() {
             onSelectEstate={setSelectedEstate}
           />
 
-          {/* Capturable Export Container */}
           <div
             id="dashboard-export-area"
             style={{
@@ -127,7 +135,9 @@ export default function App() {
             />
           </div>
         </div>
-      ) : (
+      )}
+
+      {activeTab === "solutions" && (
         <div
           style={{
             flex: 1,
@@ -138,7 +148,12 @@ export default function App() {
             flexDirection: "column",
           }}
         >
-          <JalpaiguriMap showBoundary={showBoundary} />
+          <SolutionsView
+            isInspectActive={isInspectActive}
+            setIsInspectActive={handleInspectToggle}
+            selectedTiffUrl={selectedTiffUrl}
+            setSelectedTiffUrl={setSelectedTiffUrl}
+          />
         </div>
       )}
     </div>

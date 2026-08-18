@@ -1,8 +1,8 @@
 export default function Header({
   activeTab = "overview",
   setActiveTab,
-  showBoundary,
-  setShowBoundary,
+  isInspectActive,
+  setIsInspectActive,
   totalProduction,
   filterRegion,
   onRegionChange,
@@ -21,7 +21,6 @@ export default function Header({
         alignItems: "center",
       }}
     >
-      {/* BRANDING & NAVIGATION TABS */}
       <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
         <div>
           <h1
@@ -40,7 +39,6 @@ export default function Header({
           </p>
         </div>
 
-        {/* TAB SWITCHER */}
         <div
           style={{
             display: "flex",
@@ -87,10 +85,8 @@ export default function Header({
         </div>
       </div>
 
-      {/* RIGHT SIDE CONTROLS */}
       {activeTab === "overview" ? (
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          {/* STAT OVERVIEW */}
           <div style={{ textAlign: "right", marginRight: "8px" }}>
             <div
               style={{
@@ -108,7 +104,6 @@ export default function Header({
             </div>
           </div>
 
-          {/* REGION FILTER BUTTONS */}
           <div style={{ display: "flex", gap: "4px" }}>
             {["All", "Assam", "West Bengal"].map((region) => (
               <button
@@ -131,7 +126,6 @@ export default function Header({
             ))}
           </div>
 
-          {/* CHART TYPE TOGGLE BUTTONS */}
           <div style={{ display: "flex", gap: "4px" }}>
             <button
               onClick={() => setChartType("line")}
@@ -165,7 +159,6 @@ export default function Header({
             </button>
           </div>
 
-          {/* PDF EXPORT BUTTON */}
           <button
             onClick={onExportPdf}
             style={{
@@ -205,8 +198,8 @@ export default function Header({
         >
           <input
             type="checkbox"
-            checked={showBoundary}
-            onChange={(e) => setShowBoundary(e.target.checked)}
+            checked={isInspectActive}
+            onChange={(e) => setIsInspectActive(e.target.checked)}
             style={{
               cursor: "pointer",
               accentColor: "#4ade80",
