@@ -5,9 +5,11 @@ import MapView from "./components/MapView";
 import EstateDetails from "./components/EstateDetails";
 import YieldBarChart from "./components/YieldBarChart";
 import YieldChart from "./components/YieldChart";
+import JalpaiguriMap from "./components/JalpaiguriMap";
 import { exportToPdf } from "./utils/pdfExporter";
 
 export default function App() {
+  const [activeTab, setActiveTab] = useState("overview"); // 'overview' or 'solutions'
   const [selectedEstate, setSelectedEstate] = useState(estatesData[0]);
   const [comparedEstates, setComparedEstates] = useState([]);
   const [filterRegion, setFilterRegion] = useState("All");
@@ -64,8 +66,10 @@ export default function App() {
         flexDirection: "column",
       }}
     >
-      {/* HEADER: Single unified control bar */}
+      {/* HEADER: Single unified control bar with tab navigation */}
       <Header
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
         totalProduction={totalProduction}
         filterRegion={filterRegion}
         onRegionChange={handleRegionChange}
@@ -76,48 +80,62 @@ export default function App() {
         onExportPdf={handleExportPdf}
       />
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 440px",
-          flex: 1,
-          height: "calc(100vh - 75px)",
-          overflow: "hidden",
-        }}
-      >
-        <MapView
-          filteredEstates={filteredEstates}
-          selectedEstate={selectedEstate}
-          comparedEstates={comparedEstates}
-          filterRegion={filterRegion}
-          onSelectEstate={setSelectedEstate}
-        />
-
-        {/* Capturable Export Container */}
+      {/* TAB CONTENT RENDER */}
+      {activeTab === "overview" ? (
         <div
-          id="dashboard-export-area"
           style={{
-            padding: "16px",
-            overflowY: "auto",
-            display: "flex",
-            flexDirection: "column",
-            gap: "16px",
-            backgroundColor: "#0d110e",
+            display: "grid",
+            gridTemplateColumns: "1fr 440px",
+            flex: 1,
+            height: "calc(100vh - 75px)",
+            overflow: "hidden",
           }}
         >
-          <EstateDetails
+          <MapView
+            filteredEstates={filteredEstates}
             selectedEstate={selectedEstate}
             comparedEstates={comparedEstates}
-            filteredEstates={filteredEstates}
+            filterRegion={filterRegion}
             onSelectEstate={setSelectedEstate}
-            onSelectCompare={handleToggleCompare}
-            chartType={chartType}
-            YieldChartComponent={
-              chartType === "bar" ? YieldBarChart : YieldChart
-            }
           />
+
+          {/* Capturable Export Container */}
+          <div
+            id="dashboard-export-area"
+            style={{
+              padding: "16px",
+              overflowY: "auto",
+              display: "flex",
+              flexDirection: "column",
+              gap: "16px",
+              backgroundColor: "#0d110e",
+            }}
+          >
+            <EstateDetails
+              selectedEstate={selectedEstate}
+              comparedEstates={comparedEstates}
+              filteredEstates={filteredEstates}
+              onSelectEstate={setSelectedEstate}
+              onSelectCompare={handleToggleCompare}
+              chartType={chartType}
+              YieldChartComponent={
+                chartType === "bar" ? YieldBarChart : YieldChart
+              }
+            />
+          </div>
         </div>
-      </div>
+      ) : (
+        <div
+          style={{
+            flex: 1,
+            height: "calc(100vh - 75px)",
+            padding: "16px",
+            boxSizing: "border-box",
+          }}
+        >
+          <JalpaiguriMap />
+        </div>
+      )}
     </div>
   );
 }
