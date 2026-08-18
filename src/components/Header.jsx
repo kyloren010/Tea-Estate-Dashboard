@@ -1,6 +1,8 @@
 export default function Header({
   activeTab = "overview",
   setActiveTab,
+  showBoundary,
+  setShowBoundary,
   totalProduction,
   filterRegion,
   onRegionChange,
@@ -85,8 +87,8 @@ export default function Header({
         </div>
       </div>
 
-      {/* CONTROLS & EXPORT (Shown only in Overview tab) */}
-      {activeTab === "overview" && (
+      {/* RIGHT SIDE CONTROLS */}
+      {activeTab === "overview" ? (
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
           {/* STAT OVERVIEW */}
           <div style={{ textAlign: "right", marginRight: "8px" }}>
@@ -183,6 +185,37 @@ export default function Header({
             📄 Export Clean PDF Report
           </button>
         </div>
+      ) : (
+        /* INSPECT TOGGLE FOR SOLUTIONS TAB */
+        <label
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+            cursor: "pointer",
+            backgroundColor: "#1a211d",
+            padding: "6px 14px",
+            borderRadius: "6px",
+            border: "1px solid #2d3530",
+            fontSize: "13px",
+            fontWeight: 500,
+            color: "#e5e9f0",
+            userSelect: "none",
+          }}
+        >
+          <input
+            type="checkbox"
+            checked={showBoundary}
+            onChange={(e) => setShowBoundary(e.target.checked)}
+            style={{
+              cursor: "pointer",
+              accentColor: "#4ade80",
+              width: "15px",
+              height: "15px",
+            }}
+          />
+          Inspect
+        </label>
       )}
     </header>
   );

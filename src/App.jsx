@@ -10,6 +10,7 @@ import { exportToPdf } from "./utils/pdfExporter";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("overview"); // 'overview' or 'solutions'
+  const [showBoundary, setShowBoundary] = useState(true);
   const [selectedEstate, setSelectedEstate] = useState(estatesData[0]);
   const [comparedEstates, setComparedEstates] = useState([]);
   const [filterRegion, setFilterRegion] = useState("All");
@@ -70,6 +71,8 @@ export default function App() {
       <Header
         activeTab={activeTab}
         setActiveTab={setActiveTab}
+        showBoundary={showBoundary}
+        setShowBoundary={setShowBoundary}
         totalProduction={totalProduction}
         filterRegion={filterRegion}
         onRegionChange={handleRegionChange}
@@ -131,9 +134,11 @@ export default function App() {
             height: "calc(100vh - 75px)",
             padding: "16px",
             boxSizing: "border-box",
+            display: "flex",
+            flexDirection: "column",
           }}
         >
-          <JalpaiguriMap />
+          <JalpaiguriMap showBoundary={showBoundary} />
         </div>
       )}
     </div>
