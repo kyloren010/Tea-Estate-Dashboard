@@ -6,6 +6,8 @@ const SolutionsView = ({
   setIsInspectActive,
   selectedTiffUrl,
   setSelectedTiffUrl,
+  selectedGardenData,
+  setSelectedGardenData,
 }) => {
   return (
     <div
@@ -21,12 +23,15 @@ const SolutionsView = ({
       <SolutionsMap
         activeTiffUrl={selectedTiffUrl}
         isInspectActive={isInspectActive}
+        selectedGardenData={selectedGardenData}
       />
       <SolutionsInspector
         isInspectActive={isInspectActive}
         setIsInspectActive={setIsInspectActive}
         selectedTiffUrl={selectedTiffUrl}
         setSelectedTiffUrl={setSelectedTiffUrl}
+        selectedGardenData={selectedGardenData}
+        setSelectedGardenData={setSelectedGardenData}
       />
     </div>
   );

@@ -1,8 +1,11 @@
+import binaguriBoundary from "./binaguri_tea_gardens.json";
+
 export const ESTATES_DATA = [
   {
     id: "binnaguri",
     name: "Binnaguri Tea Estate",
     location: "Jalpaiguri, West Bengal",
+    geoJson: binaguriBoundary,
     tiffs: [
       {
         month: "January 2026",
@@ -28,5 +31,4 @@ export const ESTATES_DATA = [
       },
     ],
   },
-  // Add new tea estates here in the future
 ];

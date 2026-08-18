@@ -35,11 +35,10 @@ const TiffOverlayLayer = ({ activeTiffUrl }) => {
           georaster,
           opacity: 0.9,
           resolution: 128,
-          // Hide black/near-black background pixels
           pixelValuesToColorFn: (values) => {
             const [r, g, b] = values;
             if (r <= 5 && g <= 5 && b <= 5) {
-              return null; // Make pixel transparent
+              return null; // Transparent black pixels
             }
             return `rgb(${r},${g},${b})`;
           },
@@ -62,13 +61,25 @@ const TiffOverlayLayer = ({ activeTiffUrl }) => {
   return null;
 };
 
-const SolutionsMap = ({ activeTiffUrl, isInspectActive }) => {
-  const boundaryStyle = {
+const SolutionsMap = ({
+  activeTiffUrl,
+  isInspectActive,
+  selectedGardenData,
+}) => {
+  const jalpaiguriStyle = {
     color: "#4ade80",
     weight: 2,
     opacity: 0.8,
     fillColor: "#22c55e",
-    fillOpacity: 0.15,
+    fillOpacity: 0.1,
+  };
+
+  const gardenStyle = {
+    color: "#f59e0b",
+    weight: 2.5,
+    opacity: 0.9,
+    fillColor: "#fbbf24",
+    fillOpacity: 0.25,
   };
 
   return (
@@ -92,9 +103,21 @@ const SolutionsMap = ({ activeTiffUrl, isInspectActive }) => {
           attribution='&copy; <a href="https://www.esri.com/">Esri</a>'
           url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
         />
+        {/* Requirement 1 & 6: Main Jalpaiguri boundary */}
         {isInspectActive && (
-          <GeoJSON data={jalpaiguriData} style={boundaryStyle} />
+          <GeoJSON data={jalpaiguriData} style={jalpaiguriStyle} />
         )}
+
+        {/* Requirement 2: Garden boundary inside Jalpaiguri */}
+        {isInspectActive && selectedGardenData && (
+          <GeoJSON
+            key={JSON.stringify(selectedGardenData)}
+            data={selectedGardenData}
+            style={gardenStyle}
+          />
+        )}
+
+        {/* Satellite GeoTIFF Overlay */}
         {isInspectActive && <TiffOverlayLayer activeTiffUrl={activeTiffUrl} />}
       </MapContainer>
     </div>

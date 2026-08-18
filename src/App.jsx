@@ -18,6 +18,7 @@ export default function App() {
   // Solutions Inspect state managed at App level
   const [isInspectActive, setIsInspectActive] = useState(false);
   const [selectedTiffUrl, setSelectedTiffUrl] = useState(null);
+  const [selectedGardenData, setSelectedGardenData] = useState(null);
 
   const filteredEstates = estatesData.filter(
     (e) => filterRegion === "All" || e.region === filterRegion,
@@ -60,11 +61,12 @@ export default function App() {
     exportToPdf(selectedEstate, comparedEstates);
   };
 
-  // Reset selected GeoTIFF layer when disabling Inspect mode
+  // Requirement 6: Un-selecting Inspect clears all layers (main boundary, garden boundary, TIFF)
   const handleInspectToggle = (active) => {
     setIsInspectActive(active);
     if (!active) {
       setSelectedTiffUrl(null);
+      setSelectedGardenData(null);
     }
   };
 
@@ -153,6 +155,8 @@ export default function App() {
             setIsInspectActive={handleInspectToggle}
             selectedTiffUrl={selectedTiffUrl}
             setSelectedTiffUrl={setSelectedTiffUrl}
+            selectedGardenData={selectedGardenData}
+            setSelectedGardenData={setSelectedGardenData}
           />
         </div>
       )}

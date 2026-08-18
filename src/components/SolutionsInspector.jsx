@@ -5,19 +5,28 @@ const SolutionsInspector = ({
   isInspectActive,
   selectedTiffUrl,
   setSelectedTiffUrl,
+  setSelectedGardenData,
 }) => {
   const [openEstateId, setOpenEstateId] = useState(null);
 
-  const toggleDropdown = (estateId) => {
-    setOpenEstateId((prev) => (prev === estateId ? null : estateId));
+  // Requirement 2 & 5: Toggle Garden boundary and remove active TIFF when garden selection is toggled off
+  const handleGardenClick = (estate) => {
+    if (openEstateId === estate.id) {
+      setOpenEstateId(null);
+      setSelectedGardenData(null);
+      setSelectedTiffUrl(null); // Clear satellite image if open
+    } else {
+      setOpenEstateId(estate.id);
+      setSelectedGardenData(estate.geoJson);
+      setSelectedTiffUrl(null); // Reset TIFF until user selects a month
+    }
   };
 
+  // Requirement 3 & 4: Toggle satellite layer on first click, disappear on second click
   const handleMonthClick = (url) => {
     if (selectedTiffUrl === url) {
-      // Second click: vanishes overlay, leaving only bounded region
       setSelectedTiffUrl(null);
     } else {
-      // First click: sets overlay
       setSelectedTiffUrl(url);
     }
   };
@@ -80,7 +89,7 @@ const SolutionsInspector = ({
             {ESTATES_DATA.map((estate) => (
               <div key={estate.id} style={{ position: "relative" }}>
                 <div
-                  onClick={() => toggleDropdown(estate.id)}
+                  onClick={() => handleGardenClick(estate)}
                   style={{
                     padding: "12px 16px",
                     backgroundColor:
